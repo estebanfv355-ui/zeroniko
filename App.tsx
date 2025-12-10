@@ -1,6 +1,10 @@
 
-import React, { useState, useEffect } from 'react';
-import { AttributesRadarChart, EnergyLineChart, OpportunityBubbleChart } from './components/Charts';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
+
+// --- Lazy Load Charts for Performance ---
+const AttributesRadarChart = lazy(() => import('./components/Charts').then(module => ({ default: module.AttributesRadarChart })));
+const EnergyLineChart = lazy(() => import('./components/Charts').then(module => ({ default: module.EnergyLineChart })));
+const OpportunityBubbleChart = lazy(() => import('./components/Charts').then(module => ({ default: module.OpportunityBubbleChart })));
 
 // --- Icons Helper ---
 const getKataIconClass = (n: string | number) => {
@@ -20,6 +24,13 @@ const KataIcon = ({ num }: { num: string | number }) => (
 );
 
 // --- Components ---
+
+const LoadingFallback = ({ text }: { text: string }) => (
+    <div className="h-[350px] w-full flex flex-col items-center justify-center text-niko-cyan bg-gray-900/50 rounded-xl border border-gray-800 animate-pulse">
+        <i className="fas fa-circle-notch fa-spin text-4xl mb-3"></i>
+        <span className="text-sm font-heading tracking-widest">{text}</span>
+    </div>
+);
 
 const AccordionItem = ({ title, children, colorClass }: { title: React.ReactNode, children?: React.ReactNode, colorClass: string }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +65,7 @@ const ComboList = ({ items }: { items: { title: string, desc: string }[] }) => (
 );
 
 const UserStatsCalibration = () => (
-    <div className="bg-gradient-to-r from-gray-900 to-niko-card p-6 rounded-xl border border-niko-cyan shadow-2xl mb-12">
+    <div id="calibration" className="bg-gradient-to-r from-gray-900 to-niko-card p-6 rounded-xl border border-niko-cyan shadow-2xl mb-12 scroll-mt-24">
         <h3 className="text-2xl text-white font-heading mb-4 flex items-center">
             <i className="fas fa-sliders text-niko-cyan mr-3"></i> 
             CALIBRACIÓN DE USUARIO
@@ -86,7 +97,7 @@ const UserStatsCalibration = () => (
 );
 
 const EliteProtocol = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+    <div id="elite" className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 scroll-mt-24">
         <div className="bg-niko-card p-6 rounded-xl border-t-4 border-niko-amber shadow-2xl">
             <h3 className="text-xl text-white font-heading mb-3 flex items-center">
                 <KataIcon num="2" /> CAZADOR DE CABEZAS (UPPERCUTS)
@@ -229,7 +240,7 @@ const OverloadGuide = () => (
 );
 
 const BrutePowerLab = () => (
-    <section className="mb-12">
+    <section id="powerlab" className="mb-12 scroll-mt-24">
         <h2 className="text-4xl text-white text-center mb-8 font-heading">Laboratorio de Potencia Bruta <span className="text-gray-500">(Fuerza x Velocidad)</span></h2>
         <p className="text-center text-gray-400 mb-6">Ejercicios diseñados para maximizar la explosividad con equipamiento limitado.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -630,12 +641,20 @@ const App = () => {
     return (
         <div className="antialiased min-h-screen bg-niko-bg text-slate-100 font-body">
             {/* Header */}
-            <header className="bg-niko-card shadow-lg border-b border-gray-700 sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-center md:justify-start items-center gap-4">
+            <header className="bg-niko-card shadow-lg border-b border-gray-700 sticky top-0 z-50 backdrop-blur-md bg-niko-card/90">
+                <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="text-center md:text-left">
-                        <h1 className="text-4xl font-bold tracking-widest text-niko-cyan font-heading">ZERO NIKO</h1>
+                        <h1 className="text-4xl font-bold tracking-widest text-niko-cyan font-heading cursor-pointer" onClick={() => window.scrollTo(0,0)}>ZERO NIKO</h1>
                         <p className="text-xs text-gray-400 tracking-wider">PROTOCOLO ANTI-PEEKABOO (EL MATADOR)</p>
                     </div>
+                    {/* Navigation */}
+                    <nav className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm font-heading tracking-wide">
+                        <a href="#calibration" className="text-gray-300 hover:text-niko-cyan transition-colors hover:underline decoration-niko-cyan underline-offset-4">CALIBRACIÓN</a>
+                        <a href="#analysis" className="text-gray-300 hover:text-niko-cyan transition-colors hover:underline decoration-niko-cyan underline-offset-4">ANÁLISIS</a>
+                        <a href="#elite" className="text-gray-300 hover:text-niko-cyan transition-colors hover:underline decoration-niko-cyan underline-offset-4">PROTOCOLOS</a>
+                        <a href="#powerlab" className="text-gray-300 hover:text-niko-cyan transition-colors hover:underline decoration-niko-cyan underline-offset-4">LAB</a>
+                        <a href="#schedule" className="text-gray-300 hover:text-niko-lime transition-colors hover:underline decoration-niko-lime underline-offset-4">CALENDARIO</a>
+                    </nav>
                 </div>
             </header>
 
@@ -646,7 +665,7 @@ const App = () => {
                 <UserStatsCalibration />
 
                 {/* Section 1: Analysis */}
-                <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <section id="analysis" className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center scroll-mt-24">
                     <div>
                         <h2 className="text-5xl text-white mb-4 font-heading">La Amenaza: <span className="text-niko-red">ESTILO PEEK-A-BOO</span></h2>
                         <p className="text-lg text-gray-300 leading-relaxed mb-6">
@@ -659,12 +678,14 @@ const App = () => {
                             </p>
                         </div>
                     </div>
-                    <div className="bg-niko-card p-4 rounded-xl shadow-xl border border-gray-700">
+                    <div className="bg-niko-card p-4 rounded-xl shadow-xl border border-gray-700 min-h-[400px]">
                         <div className="mb-2">
                             <h3 className="text-2xl text-white font-heading">Perfil de Atributos</h3>
                             <p className="text-xs text-gray-400">Comparativa: Fajador Peek-a-boo vs. Zero Niko</p>
                         </div>
-                        <AttributesRadarChart />
+                        <Suspense fallback={<LoadingFallback text="CARGANDO RADAR..." />}>
+                            <AttributesRadarChart />
+                        </Suspense>
                         <p className="mt-4 text-sm text-gray-400 border-t border-gray-700 pt-2">
                             <strong className="text-niko-cyan">Análisis:</strong> Debes superarlo en <strong>Velocidad de Pies</strong> (para salir) y <strong>Estamina</strong> (el estilo Peek-a-boo cansa mucho).
                         </p>
@@ -725,7 +746,7 @@ const App = () => {
                 <RoadworkProtocol />
 
                 {/* Phase 1 */}
-                <section>
+                <section id="phases" className="scroll-mt-24">
                     <div className="mb-8">
                         <span className="text-niko-cyan font-heading text-xl">FASE 1</span>
                         <h2 className="text-4xl text-white font-heading">Mantener la Distancia <span className="text-gray-500 text-2xl">(Jab y Salida)</span></h2>
@@ -791,12 +812,14 @@ const App = () => {
                             </div>
                         </div>
 
-                        <div className="md:w-2/3 bg-black/20 rounded-xl p-4 border border-gray-700">
+                        <div className="md:w-2/3 bg-black/20 rounded-xl p-4 border border-gray-700 min-h-[400px]">
                             <div className="flex justify-between items-end mb-4">
                                 <h3 className="text-xl text-white font-heading">Curva de Drenaje Energético</h3>
                                 <span className="text-xs text-gray-500 bg-gray-800 px-2 py-1 rounded">Modelo de 9 Minutos</span>
                             </div>
-                            <EnergyLineChart />
+                            <Suspense fallback={<LoadingFallback text="CARGANDO ENERGÍA..." />}>
+                                <EnergyLineChart />
+                            </Suspense>
                             <p className="text-sm text-gray-400 mt-3">
                                 <strong className="text-niko-red">La Zona de Quiebre:</strong> El estilo Peek-a-boo consume muchísima energía. Si sobrevives los primeros 4 rounds y le pegas al cuerpo, en el 5º será tuyo.
                             </p>
@@ -815,10 +838,12 @@ const App = () => {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div className="bg-niko-card p-4 rounded-xl shadow-xl border border-gray-700">
+                        <div className="bg-niko-card p-4 rounded-xl shadow-xl border border-gray-700 min-h-[400px]">
                             <h3 className="text-xl text-white mb-2 pl-2 border-l-4 border-niko-amber font-heading">Ventana de Oportunidad</h3>
                             <p className="text-sm text-gray-400 mb-4 pl-2">Análisis de probabilidad de éxito basado en la frustración del oponente.</p>
-                            <OpportunityBubbleChart />
+                            <Suspense fallback={<LoadingFallback text="CARGANDO OPORTUNIDADES..." />}>
+                                <OpportunityBubbleChart />
+                            </Suspense>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4">
@@ -861,7 +886,7 @@ const App = () => {
                 <CombatCalisthenics />
 
                 {/* Protocol Tables (Enhanced) */}
-                <section className="relative">
+                <section id="schedule" className="relative scroll-mt-24">
                     {/* Status Badge */}
                     <div className="absolute top-0 right-0 bg-niko-lime text-niko-bg font-bold px-3 py-1 rounded-bl-xl z-10">
                         ESTADO ACTUAL: ACTIVO
