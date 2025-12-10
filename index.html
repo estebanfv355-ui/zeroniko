@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia ZERO NIKO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js and Plotly are no longer needed as we use Recharts, but we keep the structure clean -->
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;400;600&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'niko-bg': '#0f172a',
+                        'niko-card': '#1e293b',
+                        'niko-cyan': '#06b6d4',
+                        'niko-red': '#f43f5e',
+                        'niko-lime': '#84cc16',
+                        'niko-amber': '#fbbf24',
+                    },
+                    fontFamily: {
+                        'heading': ['Teko', 'sans-serif'],
+                        'body': ['Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Roboto', sans-serif;
+        }
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Teko', sans-serif;
+            text-transform: uppercase;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
